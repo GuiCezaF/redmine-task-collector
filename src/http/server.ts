@@ -6,5 +6,5 @@ const app = express();
 const logger = new Logger();
 
 app.listen( 3333, () => {
-  logger.info(`Server is running! `);
+  logger.info('Server is running!');
 });

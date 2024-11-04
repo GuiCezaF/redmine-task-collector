@@ -3,13 +3,14 @@ class Logger {
     info: '\x1b[46m',    
     warn: '\x1b[43m',    
     error: '\x1b[41m',   
-    reset: '\x1b[0m'    
+    debug: '\x1b[44m',   
+    reset: '\x1b[0m'      
   };
 
-  private bold = '\x1b[1m';    
+  private bold = '\x1b[1m';       
   private whiteText = '\x1b[37m'; 
 
-  private formatMessage(level: 'info' | 'warn' | 'error', message: string): string {
+  private formatMessage(level: 'info' | 'warn' | 'error' | 'debug', message: string): string {
     const timestamp = new Date().toLocaleString();
     const background = this.backgrounds[level];
 
@@ -28,6 +29,16 @@ class Logger {
 
   public error(message: string): void {
     console.error(this.formatMessage('error', message));
+  }
+
+  public debug(message: string, data?: any): void {
+    const formattedMessage = this.formatMessage('debug', message);
+    
+    if (data) {
+      console.debug(`${formattedMessage}\nDados: ${JSON.stringify(data, null, 2)}`);
+    } else {
+      console.debug(formattedMessage);
+    }
   }
 }
 
