@@ -27,8 +27,9 @@ class Logger {
     console.warn(this.formatMessage('warn', message));
   }
 
-  public error(message: string): void {
-    console.error(this.formatMessage('error', message));
+  public error(message: string, error: any): void {
+    const formattedMessage = this.formatMessage('error', message);
+    console.error(`${formattedMessage}\nErro: ${JSON.stringify(error, null, 2)}`);
   }
 
   public debug(message: string, data?: any): void {
