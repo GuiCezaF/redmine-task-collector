@@ -1,16 +1,19 @@
 class Logger {
   private backgrounds = {
-    info: '\x1b[46m',    
-    warn: '\x1b[43m',    
-    error: '\x1b[41m',   
-    debug: '\x1b[44m',   
-    reset: '\x1b[0m'      
+    info: '\x1b[46m',
+    warn: '\x1b[43m',
+    error: '\x1b[41m',
+    debug: '\x1b[44m',
+    reset: '\x1b[0m',
   };
 
-  private bold = '\x1b[1m';       
-  private whiteText = '\x1b[37m'; 
+  private bold = '\x1b[1m';
+  private whiteText = '\x1b[37m';
 
-  private formatMessage(level: 'info' | 'warn' | 'error' | 'debug', message: string): string {
+  private formatMessage(
+    level: 'info' | 'warn' | 'error' | 'debug',
+    message: string,
+  ): string {
     const timestamp = new Date().toLocaleString();
     const background = this.backgrounds[level];
 
@@ -27,16 +30,20 @@ class Logger {
     console.warn(this.formatMessage('warn', message));
   }
 
-  public error(message: string, error: any): void {
+  public error(message: string, error: unknown): void {
     const formattedMessage = this.formatMessage('error', message);
-    console.error(`${formattedMessage}\nErro: ${JSON.stringify(error, null, 2)}`);
+    console.error(
+      `${formattedMessage}\nErro: ${JSON.stringify(error, null, 2)}`,
+    );
   }
 
-  public debug(message: string, data?: any): void {
+  public debug(message: string, data?: unknown): void {
     const formattedMessage = this.formatMessage('debug', message);
-    
+
     if (data) {
-      console.debug(`${formattedMessage}\nDados: ${JSON.stringify(data, null, 2)}`);
+      console.debug(
+        `${formattedMessage}\nDados: ${JSON.stringify(data, null, 2)}`,
+      );
     } else {
       console.debug(formattedMessage);
     }
