@@ -2,13 +2,17 @@
 	"name": "task_collector",
 	"packageManager": "yarn@4.3.1",
 	"scripts": {
-		"dev": "tsx watch --env-file .env src/http/server.ts",
-		"eslint": "eslint --fix",
-		"format": "prettier --write ."
-	},
+    "dev": "tsx watch --env-file .env src/http/server.ts",
+    "eslint": "eslint --fix",
+    "format": "prettier --write .",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
+},
 	"dependencies": {
 		"cors": "^2.8.5",
 		"express": "^4.21.1",
+		"reflect-metadata": "^0.2.2",
+		"sqlite3": "^5.1.7",
+		"typeorm": "^0.3.20",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
@@ -23,6 +27,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"prettier": "^3.3.3",
+		"ts-node": "^10.9.2",
 		"tsx": "^4.19.2",
 		"typescript": "^5.6.3"
 	}
