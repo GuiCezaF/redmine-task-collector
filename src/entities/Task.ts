@@ -17,7 +17,7 @@ export class Task {
   @Column()
     priority!: string;
 
-  @Column('text')
+  @Column({ type: 'text', nullable: true })
     description?: string | null;
 
   @Column({ type: 'date', nullable: true })
