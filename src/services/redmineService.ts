@@ -8,7 +8,6 @@ class RedmineService {
   private REDMINE_MY_ID = env.REDMINE_USER_ID;
   private REDMINE_URL = env.REDMINE_URL;
 
-
   public async handleFetchTasks(): Promise<Issue[] | null> {
     const url = `${this.REDMINE_URL}/issues.json?assigned_to_id=${this.REDMINE_MY_ID}`;
 
@@ -28,7 +27,8 @@ class RedmineService {
         return null;
       }
 
-      const data: RedmineIssuesResponse = (await response.json()) as RedmineIssuesResponse;
+      const data: RedmineIssuesResponse =
+        (await response.json()) as RedmineIssuesResponse;
       this.logger.info('Tasks fetched successfully');
 
       return data.issues;
@@ -37,7 +37,6 @@ class RedmineService {
       return null;
     }
   }
-
 }
 
 export default RedmineService;

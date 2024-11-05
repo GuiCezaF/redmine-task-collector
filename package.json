@@ -2,11 +2,11 @@
 	"name": "task_collector",
 	"packageManager": "yarn@4.3.1",
 	"scripts": {
-    "dev": "tsx watch --env-file .env src/http/server.ts",
-    "eslint": "eslint --fix",
-    "format": "prettier --write .",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
-},
+		"dev": "tsx watch --env-file .env src/http/server.ts",
+		"lint": "eslint --fix",
+		"format": "prettier --write .",
+		"typeorm": "ts-node ./node_modules/typeorm/cli.js"
+	},
 	"dependencies": {
 		"cors": "^2.8.5",
 		"express": "^4.21.1",

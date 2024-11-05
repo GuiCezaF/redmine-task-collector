@@ -14,13 +14,13 @@ export interface Issue {
   author: User;
   assigned_to?: User;
   subject: string;
-  description?: string; 
-  start_date?: string; 
-  due_date?: string; 
+  description?: string;
+  start_date?: string;
+  due_date?: string;
   done_ratio: number;
   estimated_hours?: number;
-  created_on: string; 
-  updated_on: string; 
+  created_on: string;
+  updated_on: string;
   closed_on?: string | null;
 }
 

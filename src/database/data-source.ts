@@ -3,8 +3,8 @@ import { Task } from '../entities/Task';
 
 export const AppDataSource = new DataSource({
   type: 'sqlite',
-  database: './src/database/data/database.sqlite', 
+  database: './src/database/data/database.sqlite',
   entities: [Task],
-  migrations: ['./src/database/migration/*.ts'], 
+  migrations: ['./src/database/migration/*.ts'],
   synchronize: false,
 });
