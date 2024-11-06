@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm';
 import { env } from '../config/env';
 import { Issue, RedmineIssuesResponse } from '../types/redmineTypes';
 import Logger from '../utils/logger';
@@ -37,6 +38,75 @@ class RedmineService {
       return null;
     }
   }
+
+
+  private async saveTasks(task: Issue): Promise<number | 'EXISTING' | null> {
+    try {
+      const existingTask = await getConnection()
+        .getRepository('task')
+        .createQueryBuilder('task')
+        .where("task.title = :title", { title: task.subject })
+        .getOne();
+  
+      if (existingTask) {
+        return 'EXISTING'; 
+      }
+  
+      const result = await getConnection().query(
+        `INSERT INTO
+          task(title, project, status, priority, description, dueDate)
+          VALUES(?, ?, ?, ?, ?, ?)`,
+        [
+          task.subject,
+          task.project.name,
+          task.status.name,
+          task.priority.name,
+          task.description,
+          task.due_date,
+        ]
+      );
+  
+      return result.insertId ? result.insertId : null;
+    } catch (error) {
+      this.logger.error('Erro ao salvar a tarefa:', error);
+      throw new Error('Erro ao salvar a tarefa');
+    }
+  }
+  
+
+  public async syncTasks(): Promise<void> {
+    try {
+      const tasks = await this.handleFetchTasks();
+  
+      if (!tasks || tasks.length === 0) {
+        this.logger.error('No tasks found to synchronize', new Error('Tasks list is empty'));
+        return;
+      }
+  
+      const savePromises = tasks.map(async (task) => {
+        try {
+          const result = await this.saveTasks(task);
+  
+          if (result === 'EXISTING') {
+            this.logger.info(`Task "${task.subject}" already exists and was skipped`);
+          } else if (result) {
+            this.logger.info(`Task "${task.subject}" saved with ID ${result}`);
+          } else {
+            this.logger.warn(`Failed to save task "${task.subject}" - ID not returned`);
+          }
+        } catch (error) {
+          this.logger.error(`Error saving task "${task.subject}"`, error);
+        }
+      });
+  
+      await Promise.all(savePromises);
+  
+      this.logger.info('Synchronization completed successfully');
+    } catch (error) {
+      this.logger.error('Error during task synchronization', error);
+    }
+  }
+
 }
 
 export default RedmineService;
