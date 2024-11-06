@@ -4,6 +4,7 @@ class Logger {
     warn: '\x1b[43m',
     error: '\x1b[41m',
     debug: '\x1b[44m',
+    success: '\x1b[48;5;22m', 
     reset: '\x1b[0m',
   };
 
@@ -11,7 +12,7 @@ class Logger {
   private whiteText = '\x1b[37m';
 
   private formatMessage(
-    level: 'info' | 'warn' | 'error' | 'debug',
+    level: 'info' | 'warn' | 'error' | 'debug' | 'success',
     message: string,
   ): string {
     const timestamp = new Date().toLocaleString();
@@ -47,6 +48,10 @@ class Logger {
     } else {
       console.debug(formattedMessage);
     }
+  }
+
+  public success(message: string): void {
+    console.log(this.formatMessage('success', message));
   }
 }
 

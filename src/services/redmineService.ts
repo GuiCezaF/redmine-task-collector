@@ -31,7 +31,7 @@ class RedmineService {
 
       const data: RedmineIssuesResponse =
         (await response.json()) as RedmineIssuesResponse;
-      this.logger.info('Tasks fetched successfully');
+      this.logger.success('Tasks fetched successfully');
 
       return data.issues;
     } catch (error) {
@@ -87,7 +87,7 @@ class RedmineService {
           if (result === 'EXISTING') {
             this.logger.info(`Task "${task.subject}" already exists and was skipped`);
           } else if (result) {
-            this.logger.info(`Task "${task.subject}" saved with ID ${result}`);
+            this.logger.success(`✅ Task "${task.subject}" saved with ID ${result}`);
           } else {
             this.logger.warn(`Failed to save task "${task.subject}" - ID not returned`);
           }
@@ -98,7 +98,7 @@ class RedmineService {
   
       await Promise.all(savePromises);
   
-      this.logger.info('Synchronization completed successfully');
+      this.logger.success('Synchronization completed successfully');
     } catch (error) {
       this.logger.error('Error during task synchronization', error);
     }
