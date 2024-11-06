@@ -5,21 +5,27 @@ export class Task {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @Column()
+  @Column({ type: 'varchar' }) 
     title!: string;
 
-  @Column()
+  @Column({ type: 'varchar' }) 
     project!: string;
 
-  @Column()
+  @Column({ type: 'varchar' }) 
     status!: string;
 
-  @Column()
+  @Column({ type: 'varchar' }) 
     priority!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true }) 
     description?: string | null;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'date', nullable: true }) 
     dueDate?: Date | null;
+
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' }) 
+    created_at?: Date;
+  
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' }) 
+    updated_at?: Date;
 }

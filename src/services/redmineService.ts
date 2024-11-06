@@ -1,7 +1,8 @@
-import { getConnection } from 'typeorm';
 import { env } from '../config/env';
 import { Issue, RedmineIssuesResponse } from '../types/redmineTypes';
 import Logger from '../utils/logger';
+import { AppDataSource } from '../database/data-source';
+import { Task } from '../entities/Task';
 
 class RedmineService {
   private logger = new Logger();
@@ -42,31 +43,27 @@ class RedmineService {
 
   private async saveTasks(task: Issue): Promise<number | 'EXISTING' | null> {
     try {
-      const existingTask = await getConnection()
-        .getRepository('task')
-        .createQueryBuilder('task')
-        .where("task.title = :title", { title: task.subject })
-        .getOne();
+      const taskRepository = AppDataSource.getRepository(Task);
+    
+      const existingTask = await taskRepository.findOne({
+        where: { title: task.subject },
+      });
   
       if (existingTask) {
-        return 'EXISTING'; 
+        return 'EXISTING';
       }
   
-      const result = await getConnection().query(
-        `INSERT INTO
-          task(title, project, status, priority, description, dueDate)
-          VALUES(?, ?, ?, ?, ?, ?)`,
-        [
-          task.subject,
-          task.project.name,
-          task.status.name,
-          task.priority.name,
-          task.description,
-          task.due_date,
-        ]
-      );
+      const newTask = taskRepository.create({
+        title: task.subject,
+        project: task.project.name,
+        status: task.status.name,
+        priority: task.priority.name,
+        description: task.description,
+        dueDate: task.due_date,
+      });
   
-      return result.insertId ? result.insertId : null;
+      await taskRepository.save(newTask);
+      return newTask.id;
     } catch (error) {
       this.logger.error('Erro ao salvar a tarefa:', error);
       throw new Error('Erro ao salvar a tarefa');
