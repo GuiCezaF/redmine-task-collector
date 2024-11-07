@@ -11,65 +11,71 @@ class RedmineService {
   private REDMINE_URL = env.REDMINE_URL;
 
   public async handleFetchTasks(): Promise<Issue[] | null> {
-    const url = `${this.REDMINE_URL}/issues.json?assigned_to_id=${this.REDMINE_MY_ID}`;
+    const limit = 100;
+    let offset = 0;
+    let allTasks: Issue[] = [];
+    let page = 1;
+    let haveTasks = true;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'X-Redmine-API-Key': this.REDMINE_API_KEY,
-          'Content-Type': 'application/json',
-        },
-      });
+      while (haveTasks) {
+        const url = `${this.REDMINE_URL}/issues.json?assigned_to_id=${this.REDMINE_MY_ID}&limit=${limit}&offset=${offset}&status_id=*`;
 
-      if (!response.ok) {
-        this.logger.error(
-          `Failed to fetch tasks. HTTP status:`,
-          response.status,
-        );
-        return null;
+        const response = await fetch(url, {
+          headers: {
+            'X-Redmine-API-Key': this.REDMINE_API_KEY,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          this.logger.error(`Failed to fetch tasks. HTTP status: `, response.status);
+          return null;
+        }
+
+        const data = (await response.json()) as RedmineIssuesResponse;
+        const tasks = data.issues || [];
+
+        this.logger.info(`Página ${page} - Tarefas trazidas: ${tasks.length}`);
+
+        allTasks = allTasks.concat(tasks);
+
+        if (tasks.length < limit) {
+          haveTasks = false;
+        }
+
+        offset += limit;
+        page++;
       }
 
-      const data: RedmineIssuesResponse =
-        (await response.json()) as RedmineIssuesResponse;
-      this.logger.success('Tasks fetched successfully');
-
-      return data.issues;
+      this.logger.success('All tasks fetched successfully');
+      return allTasks;
     } catch (error) {
       this.logger.error('Error while fetching tasks', error);
       return null;
     }
   }
 
-
-  private async saveTasks(task: Issue): Promise<number | 'EXISTING' | null> {
+  private async saveTasks(task: Issue): Promise<number | null> {
     try {
       const taskRepository = AppDataSource.getRepository(Task);
-    
-      const existingTask = await taskRepository.findOne({
-        where: { title: task.subject },
-      });
-  
-      if (existingTask) {
-        return 'EXISTING';
-      }
-  
+
       const newTask = taskRepository.create({
         title: task.subject,
         project: task.project.name,
         status: task.status.name,
         priority: task.priority.name,
         description: task.description,
-        dueDate: task.due_date,
+        dueDate: task.due_date ? new Date(task.due_date) : null, 
       });
-  
-      await taskRepository.save(newTask);
-      return newTask.id;
+
+      const savedTask = await taskRepository.save(newTask);
+      return savedTask.id;
     } catch (error) {
-      this.logger.error('Erro ao salvar a tarefa:', error);
+      this.logger.error('Erro ao salvar a tarefa:', error instanceof Error ? error.message : error);
       throw new Error('Erro ao salvar a tarefa');
     }
   }
-  
 
   public async syncTasks(): Promise<void> {
     try {
@@ -80,30 +86,60 @@ class RedmineService {
         return;
       }
   
-      const savePromises = tasks.map(async (task) => {
-        try {
-          const result = await this.saveTasks(task);
+      const taskRepository = AppDataSource.getRepository(Task);
   
-          if (result === 'EXISTING') {
-            this.logger.info(`Task "${task.subject}" already exists and was skipped`);
-          } else if (result) {
-            this.logger.success(`✅ Task "${task.subject}" saved with ID ${result}`);
+      const syncPromises = tasks.map(async (task) => {
+        try {
+          const existingTask = await taskRepository.findOne({
+            where: { title: task.subject },
+          });
+  
+          if (existingTask) {
+            const hasChanges = this.hasTaskChanged(existingTask, task);
+            
+            if (hasChanges) {
+              this.logger.info(`Task "${task.subject}" has changes. Updating.`);
+              existingTask.project = task.project.name;
+              existingTask.status = task.status.name;
+              existingTask.priority = task.priority.name;
+              existingTask.description = task.description;
+              existingTask.dueDate = task.due_date ? new Date(task.due_date) : null;
+              await taskRepository.save(existingTask);
+              this.logger.success(`✅ Task "${task.subject}" updated with ID ${existingTask.id}`);
+            } else {
+              this.logger.info(`Task "${task.subject}" has no changes. Skipping update.`);
+            }
           } else {
-            this.logger.warn(`Failed to save task "${task.subject}" - ID not returned`);
+            const newTaskId = await this.saveTasks(task);
+            if (newTaskId) {
+              this.logger.success(`✅ Task "${task.subject}" saved with ID ${newTaskId}`);
+            } else {
+              this.logger.warn(`Failed to save task "${task.subject}" - ID not returned`);
+            }
           }
         } catch (error) {
-          this.logger.error(`Error saving task "${task.subject}"`, error);
+          this.logger.error(`Error syncing task "${task.subject}":`, error instanceof Error ? error.message : error);
         }
       });
   
-      await Promise.all(savePromises);
+      await Promise.all(syncPromises);
   
       this.logger.success('Synchronization completed successfully');
     } catch (error) {
       this.logger.error('Error during task synchronization', error);
     }
-  }
+  }  
 
+  private hasTaskChanged(existingTask: Task, task: Issue): boolean {
+  
+    return (
+      existingTask.project.trim().toLowerCase() != (task.project?.name?.trim()?.toLowerCase() || '') ||
+      existingTask.status.trim().toLowerCase() != (task.status?.name?.trim()?.toLowerCase() || '') ||
+      existingTask.priority.trim().toLowerCase() != (task.priority?.name?.trim()?.toLowerCase() || '') ||
+      existingTask.description?.trim().toLowerCase() != (task.description?.trim()?.toLowerCase() || '') 
+    );
+  }
+  
 }
 
 export default RedmineService;
