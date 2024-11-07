@@ -90,6 +90,11 @@ class RedmineService {
   
       const syncPromises = tasks.map(async (task) => {
         try {
+
+          if (task.status.name === "Não concluído na Sprint") return;
+          if (task.tracker.name === "Agrupador") return;
+          
+
           const existingTask = await taskRepository.findOne({
             where: { title: task.subject },
           });
@@ -128,7 +133,7 @@ class RedmineService {
     } catch (error) {
       this.logger.error('Error during task synchronization', error);
     }
-  }  
+  }
 
   private hasTaskChanged(existingTask: Task, task: Issue): boolean {
   

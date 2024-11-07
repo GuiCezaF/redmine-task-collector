@@ -15,7 +15,6 @@ async function runSyncTasks() {
 
     await _redmineService.syncTasks();
 
-    logger.success('Tasks synchronized successfully!');
   } catch (error) {
     logger.error('Error synchronizing tasks:', error);
   } finally {
