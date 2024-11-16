@@ -4,7 +4,7 @@ class Logger {
     warn: '\x1b[43m',
     error: '\x1b[41m',
     debug: '\x1b[44m',
-    success: '\x1b[48;5;22m', 
+    success: '\x1b[48;5;22m',
     reset: '\x1b[0m',
   };
 

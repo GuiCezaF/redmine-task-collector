@@ -6,7 +6,6 @@ const logger = new Logger();
 
 const app = express();
 
-
 app.listen(3333, () => {
   logger.info('Server is running!');
 });
