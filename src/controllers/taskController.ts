@@ -7,7 +7,16 @@ import { Task } from "../entities/Task";
 class TaskController {
   constructor(private _redmineService: RedmineService, private _taskService: TaskServices) {}
 
-  public async getAllTasks(req: Request, res: Response): Promise<void> {
+  async syncronizeTask(req: Request, res: Response): Promise<void>{
+    try{
+      await this._redmineService.syncTasks();
+      res.status(200).json({ message: "Tasks synchronized successfully" });
+    }catch(err){
+      throw new Error(`Failed to sync tasks: ${err}`);
+    };
+  }
+
+  async getAllTasks(req: Request, res: Response): Promise<void> {
     try {
       const tasks: Task[] = await this._taskService.getAllTasks();
 

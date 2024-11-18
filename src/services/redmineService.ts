@@ -10,7 +10,7 @@ class RedmineService {
   private REDMINE_MY_ID = env.REDMINE_USER_ID;
   private REDMINE_URL = env.REDMINE_URL;
 
-  public async handleFetchTasks(): Promise<Issue[] | null> {
+  private async handleFetchTasks(): Promise<Issue[] | null> {
     const limit = 100;
     let offset = 0;
     let allTasks: Issue[] = [];
