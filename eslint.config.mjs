@@ -16,13 +16,15 @@ const compat = new FlatCompat({
 export default [
   ...compat.extends('plugin:@typescript-eslint/recommended', 'prettier'),
   {
+    files: ['src/**/*.{js,ts}'],
+    ignores: ['dist/', 'node_modules/', 'coverage/'],
     languageOptions: {
       globals: {
         ...globals.node,
       },
 
       parser: tsParser,
-      ecmaVersion: 2020,
+      ecmaVersion: 2022,
       sourceType: 'module',
     },
 

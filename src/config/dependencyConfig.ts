@@ -1,9 +1,9 @@
-import { AppDataSource } from "../database/data-source";
-import { Task } from "../entities/Task";
-import RedmineService from "../services/redmineService";
-import TaskServices from "../services/taskServices";
-import TaskController from "../controllers/taskController";
-import Logger from "../utils/logger";
+import { AppDataSource } from '../database/data-source';
+import { Task } from '../entities/Task';
+import RedmineService from '../services/redmineService';
+import TaskServices from '../services/taskServices';
+import TaskController from '../controllers/taskController';
+import Logger from '../utils/logger';
 
 const logger = new Logger();
 

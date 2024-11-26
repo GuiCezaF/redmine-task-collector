@@ -1,8 +1,7 @@
 import 'reflect-metadata';
-import { Repository } from "typeorm";
-import { Task } from "../entities/Task";
-import Logger from "../utils/logger";
-
+import { Repository } from 'typeorm';
+import { Task } from '../entities/Task';
+import Logger from '../utils/logger';
 
 class TaskServices {
   private logger = new Logger();
@@ -14,9 +13,8 @@ class TaskServices {
 
   async getAllTasks(): Promise<Task[]> {
     try {
-
       const tasks = await this.taskRepository.find();
-      this.logger.success("Tasks retrieved sucessfully");
+      this.logger.success('Tasks retrieved sucessfully');
 
       return tasks;
     } catch (err) {

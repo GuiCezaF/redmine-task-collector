@@ -12,14 +12,14 @@ async function startServer() {
     const dependenciesConfig = await configureDependencies();
 
     app.use(express.json());
-    app.use('/api', router(dependenciesConfig)); 
+    app.use('/api', router(dependenciesConfig));
 
     app.listen(3333, () => {
       logger.info('Server is running on port 3333');
     });
   } catch (error) {
     console.error('Error during server startup:', error);
-    process.exit(1); 
+    process.exit(1);
   }
 }
 
