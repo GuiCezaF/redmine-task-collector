@@ -8,14 +8,14 @@
 		"typeorm": "ts-node ./node_modules/typeorm/cli.js",
 		"sync-tasks": "tsx --env-file .env src/cli/cli.ts sync-tasks",
 		"build": "tsc",
-		"start": "dotenv -e .env node dist/http/server.js"
+		"start:prod": "dotenv -e .env node dist/http/server.js"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.21.1",
+		"pg": "^8.13.1",
 		"reflect-metadata": "^0.2.2",
-		"sqlite3": "^5.1.7",
 		"typeorm": "^0.3.20",
 		"yargs": "^17.7.2",
 		"zod": "^3.23.8"
@@ -25,8 +25,10 @@
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.8.7",
+		"@types/pg": "^8",
 		"@types/yargs": "^17.0.33",
 		"@typescript-eslint/eslint-plugin": "^8.16.0",
+		"@typescript-eslint/parser": "^8.16.0",
 		"dotenv-cli": "^7.4.4",
 		"eslint": "^9.12.0",
 		"eslint-config-prettier": "^9.1.0",

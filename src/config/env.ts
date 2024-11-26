@@ -7,6 +7,11 @@ const envSchema = z.object({
   REDMINE_API_KEY: z.string(),
   REDMINE_USER_ID: z.coerce.number(),
   REDMINE_URL: z.string().url(),
+  DB_HOST: z.string(),
+  DB_PORT: z.coerce.number(),
+  DB_USERNAME: z.string(),
+  DB_PASSWORD: z.string(),
+  DB_NAME: z.string(),
 });
 
 const validate = envSchema.safeParse(process.env);
