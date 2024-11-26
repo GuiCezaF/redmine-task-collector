@@ -101,6 +101,7 @@ class RedmineService {
         try {
           if (task.status.name === 'Não concluído na Sprint') return;
           if (task.tracker.name === 'Agrupador') return;
+          if (task.tracker.name === 'Projeto') return;
 
           const existingTask = await taskRepository.findOne({
             where: { title: task.subject },
