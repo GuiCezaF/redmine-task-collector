@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+import "dotenv/config";
 import express from 'express';
+import { env } from '../config/env';
 import Logger from '../utils/logger';
 import router from '../routes/routes';
 import { configureDependencies } from '../config/dependencyConfig';
@@ -14,7 +16,7 @@ async function startServer() {
     app.use(express.json());
     app.use('/api', router(dependenciesConfig));
 
-    app.listen(3333, () => {
+    app.listen(env.APP_PORT, () => {
       logger.info('Server is running on port 3333');
     });
   } catch (error) {

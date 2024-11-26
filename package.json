@@ -8,7 +8,10 @@
 		"typeorm": "ts-node ./node_modules/typeorm/cli.js",
 		"sync-tasks": "tsx --env-file .env src/cli/cli.ts sync-tasks",
 		"build": "tsc",
-		"start:prod": "dotenv -e .env node dist/http/server.js"
+		"start:prod": "node dist/http/server.js",
+		"migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate src/migration/<MigrationName>",
+		"migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run --dataSource src/database/data-source.ts",
+		"migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
