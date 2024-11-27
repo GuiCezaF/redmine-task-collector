@@ -19,7 +19,7 @@ export const configureDependencies = async () => {
 
     return taskController;
   } catch (error) {
-    console.error('Error configuring dependencies:', error);
+    logger.error('Error configuring dependencies:', error);
     throw new Error('Dependency configuration failed');
   }
 };

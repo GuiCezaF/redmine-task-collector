@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 class Logger {
   private backgrounds = {
     info: '\x1b[46m',

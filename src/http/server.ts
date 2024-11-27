@@ -20,7 +20,7 @@ async function startServer() {
       logger.info('Server is running on port 3333');
     });
   } catch (error) {
-    console.error('Error during server startup:', error);
+    logger.error('Error during server startup:', error);
     process.exit(1);
   }
 }

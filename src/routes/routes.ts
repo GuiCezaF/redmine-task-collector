@@ -12,8 +12,6 @@ export default (taskController: TaskController) => {
   router.get('/finished-tasks', (req, res) =>
     taskController.getFinishedTasks(req, res),
   );
-  router.get('/task', (req, res) =>
-    taskController.getTasksByName(req, res),
-  );
+  router.get('/task', (req, res) => taskController.getTasksByName(req, res));
   return router;
 };
