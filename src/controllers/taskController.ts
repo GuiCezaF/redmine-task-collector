@@ -26,6 +26,10 @@ class TaskController {
     try {
       const tasks: Task[] = await this._taskService.getAllTasks();
 
+      if (!tasks || tasks.length === 0) {
+        res.status(404).json({ error: 'Task not found' });
+      }
+
       res.status(200).json(tasks);
     } catch (error) {
       this.logger.error('Error fetching tasks:', error);
@@ -37,10 +41,54 @@ class TaskController {
     try {
       const tasks: Task[] = await this._taskService.getAtivedTasks();
 
+      if (!tasks || tasks.length === 0) {
+        res.status(404).json({ error: 'Task not found' });
+      }
+
       res.status(200).json(tasks);
     } catch (error) {
       this.logger.error('Error fetching active tasks:', error);
       res.status(500).json({ error: 'Failed to fetch active tasks' });
+    }
+  }
+
+  async getFinishedTasks(req: Request, res: Response): Promise<void> {
+    try {
+      const tasks: Task[] = await this._taskService.getFinishedTasks();
+
+      if (!tasks || tasks.length === 0) {
+        res.status(404).json({ error: 'Task not found' });
+      }
+
+      res.status(200).json(tasks);
+    } catch (error) {
+      this.logger.error('Error fetching finished tasks:', error);
+      res.status(500).json({ error: 'Failed to fetch finished tasks' });
+    }
+  }
+
+  async getTasksByName(req: Request, res: Response): Promise<void> {
+    const { task_name } = req.query;
+
+    if (!task_name || typeof task_name !== 'string') {
+      res.status(400).json({
+        error: 'Parameter "task_name" is required and must be a string',
+      });
+      return;
+    }
+
+    try {
+      const tasks: Task[] = await this._taskService.getTaskByName(task_name);
+
+      if (tasks.length === 0) {
+        res.status(404).json({ message: 'No tasks found with the given name' });
+      } else {
+        res.status(200).json(tasks);
+      }
+    } catch (error) {
+      this.logger.error('Error fetching tasks by name:', { task_name, error });
+
+      res.status(500).json({ error: 'Failed to fetch tasks by name' });
     }
   }
 }

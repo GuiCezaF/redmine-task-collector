@@ -1,12 +1,11 @@
-import "dotenv/config";
+import 'dotenv/config';
 import { z } from 'zod';
 import Logger from '../utils/logger';
-
 
 const logger = new Logger();
 
 const envSchema = z.object({
-  APP_PORT:z.coerce.number(),
+  APP_PORT: z.coerce.number(),
   REDMINE_API_KEY: z.string(),
   REDMINE_USER_ID: z.coerce.number(),
   REDMINE_URL: z.string().url(),
