@@ -4,6 +4,12 @@ WORKDIR /app
 
 COPY . /app
 
+RUN apt-get update && \
+    apt-get install -y tzdata && \
+    ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    apt-get clean
+
 RUN chmod +x ./scripts/wait-for-it.sh
 
 RUN npm install
